@@ -1,0 +1,50 @@
+// https://leetcode.cn/problems/search-in-rotated-sorted-array/description/
+
+class Solution {
+    /**
+     * 类似二分查找思路：
+     * 对于nums[mid]，分2种情况：
+     * 情况1：左边是递增续，右边是先增再减
+     * 情况2左边是先增再减，右边是递增续
+     * 注意考虑下刚好nums[mid]是最大值，或者最小值的情况
+     * 
+     * 以情况1为例：如果target>nums[mid] 那只可能在右边；反之只可能在左边。可以缩小数组的搜索规模，接近于二分的效果。
+     */
+    public int search(int[] nums, int target) {
+        if (nums == null || nums.length == 0) {
+            return -1;
+        }
+        if (nums.length == 1) {
+            return nums[0] == target ? 0 : -1;
+        }
+
+        int l = 0, r = nums.length - 1;
+        while (l < r) {
+            int m = (l + r) / 2;
+            if (nums[m] == target) {
+                return m;
+            }
+            if (nums[0] <= nums[m]) {
+                // 当nums[0]==nums[m]认为左边升序，因为此时右边肯定不升序
+                // 左边升序
+                if (nums[l] <= target && target < nums[m]) {
+                    r = m - 1;
+                } else {
+                    l = m + 1;
+                }
+            } else {
+                // 右边升序
+                if (nums[m] < target && target <= nums[r]) {
+                    l = m + 1;
+                } else {
+                    r = m - 1;
+                }
+            }
+        }
+
+        if (l == r && nums[l] == target) {
+            return l;
+        }
+        return -1;
+    }
+}
