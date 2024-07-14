@@ -1,0 +1,61 @@
+/**
+ * 直接用LinkedHashMap接口最快。jdk提供removeEldestEntry()来决定何时移除最近未被访问元素，可以在列表size大于容量capacity时。
+ * 
+ * 自己实现的话注意：记录key被访问的频次，put和get都算。并且实时记录最低频的key，容量满了时删除这个最低频的key
+ * 
+ */
+class LRUCache {
+    private int capacity = 0;
+    private Map<Integer, Integer> cache;
+    private Map<Integer, Integer> keyToFreq = new HashMap();
+
+    public LRUCache(int capacity) {
+        cache = new ConcurrentHashMap();
+        capacity = capacity;
+    }
+
+    public int get(int key) {
+        if (cache == null) {
+            return -1;
+        }
+        Integer keyInteger = Integer.valueOf(key);
+        Integer value = cache.get(keyInteger);
+        if (value == null) {
+            return -1;
+        }
+        keyToFreq.putIfAbsent(keyInteger, Integer.valueOf(0));
+        keyToFreq.put(keyInteger, keyToFreq.get(key) + 1);
+
+        int freq = keyToFreq.get(keyInteger);
+        if (freq < minFreq) {
+            minFreq = freq;
+            minFreqKey = keyInteger;
+        }
+        return value;
+    }
+
+    public void put(int key, int value) {
+        if (cache == null) {
+            return;
+        }
+        Integer keyInteger = Integer.valueOf(key);
+        if (cache.containsKey(keyInteger)) {
+            cache.put(keyInteger, value);
+            return;
+        }
+        if (cache.size() >= capacity && minFreqKey != null) {
+            cache.remove(minFreqKey);
+        }
+
+        cache.put(keyInteger, value);
+        minFreq = 0;
+        minFreqKey = keyInteger;
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
