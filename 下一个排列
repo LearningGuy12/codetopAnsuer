@@ -1,0 +1,42 @@
+// 下一个排列  https://leetcode.cn/problems/next-permutation/description/
+class Solution {
+    /**
+     * 从后外前找，如果前一个数>=当前数则继续往前，直到前一个数<当前数
+     * 寻找后半部分比前一个数大的，把前一个数与这个数交换
+     * 对当前到结束的部分进行排序
+     */
+    public void nextPermutation(int[] nums) {
+        if (nums == null || nums.length <= 1) {
+            return;
+        }
+        for (int i = nums.length - 1; i >= 0; i--) {
+            if (i == 0) {
+                // 说明是完全倒序，则整体排序下成升序
+                Arrays.sort(nums, i, nums.length);
+                break;
+            }
+
+            if (nums[i - 1] >= nums[i] ) {
+                // 如果前一个数>=当前数则继续往前，直到前一个数<当前数
+                continue;
+            }
+            // 前一个数<当前数
+            // 寻找后半部分比前一个数大的，把前一个数与这个数交换
+            swap(nums, i - 1);
+            // 对当前到结束的部分进行排序
+            Arrays.sort(nums, i, nums.length);
+            break;
+        }
+    }
+
+    void swap(int[] nums, int before) {
+        for (int i = nums.length - 1; i > before; i--) {
+            if (nums[i] > nums[before]) {
+                int tmp = nums[i];
+                nums[i] = nums[before];
+                nums[before] = tmp;
+                break;
+            }
+        }
+    }
+}
