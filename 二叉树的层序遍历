@@ -1,0 +1,32 @@
+// https://leetcode.cn/problems/binary-tree-level-order-traversal/description/
+
+class Solution {
+    /**
+     * 用List记录每一层的节点，第一层只有root
+     * 遍历List中的节点，拿到当前层的所有val，同时把节点的左右子节点写入下一层节点List
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList();
+        }
+        List<List<Integer>> ret = new ArrayList();
+        List<TreeNode> levelNodes = new ArrayList();
+        levelNodes.add(root);
+        while (!levelNodes.isEmpty()) {
+            List<TreeNode> nextLevelNodes = new ArrayList();
+            List<Integer> curLevelVals = new ArrayList();
+            for (TreeNode node : levelNodes) {
+                curLevelVals.add(node.val);
+                if (node.left != null) {
+                    nextLevelNodes.add(node.left);
+                }
+                if (node.right != null) {
+                    nextLevelNodes.add(node.right);
+                }
+            }
+            ret.add(curLevelVals);
+            levelNodes = nextLevelNodes;
+        }
+        return ret;
+    }
+}
