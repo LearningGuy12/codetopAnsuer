@@ -1,0 +1,51 @@
+// 143. 重排链表
+// https://leetcode.cn/problems/reorder-list/description/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ * int val;
+ * ListNode next;
+ * ListNode() {}
+ * ListNode(int val) { this.val = val; }
+ * ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    /**
+        遍历一遍，节点写入栈。
+        计算栈长度的一半，从原队列头，和栈顶各取1个元素，建立连接。依次循环
+        如果栈长度为偶数，则循环的最后一轮，最后一个节点是栈底节点，要指向null
+        如果栈长度为奇数，则循环的最后一轮，栈底节点会指向正中心的节点，正中心节点next要指向null
+     */
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return;
+        }
+
+        Stack<ListNode> stack = new Stack();
+        ListNode tmp = head;
+        while (tmp != null) {
+            stack.add(tmp);
+            tmp = tmp.next;
+        }
+        int halfLength = stack.size() / 2;
+        boolean isOuShu = stack.size() % 2 == 0;
+        for (int i = 0; i < halfLength; i++) {
+            ListNode n = head.next;
+            ListNode p = stack.pop();
+            head.next = p;
+            if (i == halfLength - 1 && isOuShu) {
+                // 如果栈长度为偶数，则循环的最后一轮，最后一个节点是栈底节点，要指向null
+                p.next = null;
+            } else {
+                p.next = n;
+            }
+            head = n;
+            if (i == halfLength - 1 && !isOuShu) {
+                // 如果栈长度为奇数，则循环的最后一轮，栈底节点会指向正中心的节点，正中心节点next要指向null
+                head.next = null;
+            }
+        }
+    }
+}
