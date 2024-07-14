@@ -1,0 +1,108 @@
+class Solution {
+    /**
+     * 构建小顶堆，最快的方法使用PriorityQueue，堆大小是k，则堆顶就是第K大的元素。
+     * 代码后部分记录了构建堆的基础操作，手撸有点难度容易忘记。
+     */
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> queue = new PriorityQueue();
+        for (int i = 0; i < nums.length; i++) {
+            if (i < k) {
+                queue.offer(nums[i]);
+                continue;
+            }
+            if (nums[i] > queue.peek()) {
+                queue.offer(nums[i]);
+                queue.poll();
+            }
+        }
+        return queue.peek();
+    }
+
+    public static class MyPriorityQueue<T extends Comparable> {
+        List<T> array;
+        int size = 0;
+
+        /**
+         * 构建小顶堆，对于数组前一半元素，从后往前遍历，向下调整位置
+         */
+        MyPriorityQueue(final List<T> input) {
+            array = new ArrayList<T>(input);
+            size = input.size();
+            if (size <= 1) {
+                return;
+            }
+            int parentIndex = (size - 2) / 2;
+            while (parentIndex >= 0) {
+                shifDown(parentIndex);
+                parentIndex--;
+            }
+        }
+
+        private void swap(int i, int j) {
+            T tmp = array.get(i);
+            array.set(i, array.get(j));
+            array.set(j, tmp);
+        }
+
+        /**
+         * 从上往下，不断swap直到符合：父<左子&父<右子 过程中注意比较左右子节点，父结点和更小的那个子节点swao，调整后父节点同时小于左右子节点
+         */
+        private void shiftDown(int parentIndex) {
+            if (parentIndex >= size) {
+                return;
+            }
+            int childIndex = 2 * parentIndex + 1;
+            while (childIndex < size) {
+                T valueLeft = array.get(childIndex);
+                if (childIndex + 1 < size && array.get(childIndex + 1).compartTo(valueLeft) < 0) {
+                    childIndex++;
+                }
+                if (array.get(parentIndex).compartTo(array.get(childIndex)) > 0) {
+                    swap(parentIndex, childIndex);
+                    parentIndex = childIndex;
+                    childIndex = 2 * parentIndex + 1;
+                } else {
+                    return;
+                }
+            }
+        }
+
+        /**
+         * 从下往上，不断swap直到符合：父<当前
+         */
+        private void shifUp(int childIndex) {
+            while (childIndex > 0) {
+                int parentIndex = (childIndex - 2) / 2;
+                if (array.get(parentIndex).compartTo(array.get(childIndex)) > 0) {
+                    swap(parentIndex, childIndex);
+                    childIndex = parentIndex;
+                } else {
+                    return;
+                }
+            }
+        }
+
+        /** 新增元素，放到数组末尾，往上旋 */
+        public void offer(T t) {
+            list.add(t);
+            size++;
+            shifUp(size - 1);
+        }
+
+        /** 移除最小元素，index0和数组末尾互换，size--，然后对index0向下调整 */
+        public void poll() {
+            if (size <= 0) {
+                return;
+            }
+            T ret = array.get(0);
+            swap(0, size - 1);
+            shiftDown(0);
+            size--;
+            return ret;
+        }
+
+        public void peek() {
+            return list.get(0);
+        }
+    }
+}
