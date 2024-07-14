@@ -1,0 +1,35 @@
+// https://leetcode.cn/problems/merge-sorted-array/
+class Solution {
+    /**
+     * 为了满足复用nums1的存储，只能选择从后往前记录数据
+     * 对两个数组倒序遍历，取大值写到nums1数组的最后位置
+     * 如果某个数组到头了，把另一个数组继续倒序访问填满nums1
+     */
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int index = m + n - 1;
+        int i = m - 1;
+        int j = n - 1;
+        while (index >= 0) {
+            if (i < 0) {
+                nums1[index] = nums2[j];
+                j--;
+                index--;
+                continue;
+            }
+            if (j < 0) {
+                nums1[index] = nums1[i];
+                i--;
+                index--;
+                continue;
+            }
+            if (nums1[i] > nums2[j]) {
+                nums1[index] = nums1[i];
+                i--;
+            } else {
+                nums1[index] = nums2[j];
+                j--;
+            }
+            index--;
+        }
+    }
+}
