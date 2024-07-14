@@ -1,0 +1,46 @@
+// https://leetcode.cn/problems/merge-two-sorted-lists/description/
+class Solution {
+    /**
+     * 简单题目，两个链表元素比较放到结果链表，某一个链表到最后节点后，另一个链表剩余节点继续遍历放入结果链表
+     * 防止出现头指针NPE，做个假的head，实际返回head.next;
+     */
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        if (list1 == null) {
+            return list2;
+        }
+        if (list2 == null) {
+            return list1;
+        }
+
+        ListNode head = new ListNode();
+        ListNode ret = head;
+        while (true) {
+            if (list1 == null && list2 == null) {
+                break;
+            }
+            if (list1 == null) {
+                head.next = list2;
+                list2 = list2.next;
+                head = head.next;
+                continue;
+            }
+            if (list2 == null) {
+                head.next = list1;
+                list1 = list1.next;
+                head = head.next;
+                continue;
+            }
+
+            if (list1.val <= list2.val) {
+                head.next = list1;
+                list1 = list1.next;
+                head = head.next;
+            } else {
+                head.next = list2;
+                list2 = list2.next;
+                head = head.next;
+            }
+        }
+        return ret.next;
+    }
+}
