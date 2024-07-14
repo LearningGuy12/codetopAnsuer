@@ -1,0 +1,38 @@
+// https://leetcode.cn/problems/spiral-matrix/description/
+
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> result = new ArrayList();
+        visitCircle(matrix, 0, 0, result);
+        return result;
+    }
+
+    /**
+     * 遍历外环一圈，那么剩余问题规模会缩小至内圈部分螺旋矩阵，递归处理内圈即可
+     * 注意对于矩阵行或者列只有size1时，不用执行完整个螺旋遍历，否则会重复遍历。
+     */
+    void visitCircle(int[][] matrix, int beginRow, int beginCol, List<Integer> result) {
+        int endRow = matrix.length - beginRow - 1;
+        int endCol = matrix[0].length - beginCol - 1;
+        if (beginRow > endRow || beginCol > endCol) {
+            return;
+        }
+        for (int i = beginCol; i <= endCol; i++) {
+            result.add(matrix[beginCol][i]);
+        }
+        for (int i = beginRow + 1; i <= endRow; i++) {
+            result.add(matrix[i][endCol]);
+        }
+        if (endRow > beginRow) {
+            for (int i = endCol - 1; i >= beginCol; i--) {
+                result.add(matrix[endRow][i]);
+            }
+        }
+        if (endCol > beginCol) {
+            for (int i = endRow - 1; i > beginRow; i--) {
+                result.add(matrix[i][beginCol]);
+            }
+        }
+        visitCircle(matrix, beginRow + 1, beginCol + 1, result);
+    }
+}
