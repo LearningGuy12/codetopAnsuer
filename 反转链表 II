@@ -1,0 +1,82 @@
+// https://leetcode.cn/problems/reverse-linked-list-ii/description/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ * int val;
+ * ListNode next;
+ * ListNode() {}
+ * ListNode(int val) { this.val = val; }
+ * ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    /**
+     * 将链表划分为前中后三个链表，对中链表翻转并返回反转后的head，再把前 head 后合并返回
+     * 注意前、后链表可能为null
+     */
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode beforeHead = left == 1 ? null : head;
+        ListNode midHead = null;
+        ListNode afterHead = null;
+
+        int iter = 1;
+        ListNode curBefore = null;
+        ListNode cur = head;
+        while (cur != null) {
+            ListNode next = cur.next;
+            if (iter == left) {
+                if (curBefore != null) {
+                    curBefore.next = null;
+                }
+                midHead = cur;
+            }
+            if (iter == right) {
+                afterHead = next;
+                cur.next = null;
+            }
+            curBefore = cur;
+            cur = next;
+            iter++;
+        }
+
+        // 翻转中间部分
+        midHead = reverse(midHead);
+
+        // 前段与中段连接
+        if (beforeHead == null) {
+            beforeHead = midHead;
+        } else {
+            cur = beforeHead;
+            while (cur.next != null) {
+                cur = cur.next;
+            }
+            cur.next = midHead;
+        }
+        // 中段与后段相连
+        cur = midHead;
+        while (cur.next != null) {
+            cur = cur.next;
+        }
+        cur.next = afterHead;
+        return beforeHead;
+    }
+
+    ListNode reverse(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode pre = null;
+        while (head != null) {
+            ListNode next = head.next;
+            head.next = pre;
+            pre = head;
+            head = next;
+        }
+        return pre;
+    }
+
+}
