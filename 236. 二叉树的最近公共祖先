@@ -1,0 +1,60 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    /**
+     * 简单解法：遍历树，Map<TreeNode, TreeNode> nodeToParent
+     * 记录每个节点的父节点。然后找到p直到根的路径。再遍历q到根的路径，如果出现在p到根的路径中，则这个节点就是最近公共祖先。
+     * 
+     * 复杂点思路：对于某个节点，如果p q都在它的左子树或者右子树，则这个节点肯定不是最近的公共祖先，那么问题规模可以缩小为找这个子树上的最近公共祖先。
+     * 如果p和q分别在左、右子树存在，那么这个节点就是最近公共祖先
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || p == null || q == null) {
+            return null;
+        }
+        if (p == q) {
+            return p;
+        }
+        if (p == root || q == root) {
+            return root;
+        }
+
+        Map<TreeNode, TreeNode> nodeToParent = new HashMap();
+        dfs(root, nodeToParent);
+
+        Set<TreeNode> pParents = new HashSet();
+        while (p != null) {
+            pParents.add(p);
+            p = nodeToParent.get(p);
+        }
+
+        while (q != null) {
+            if (pParents.contains(q)) {
+                return q;
+            }
+            q = nodeToParent.get(q);
+        }
+        return null;
+    }
+
+    void dfs(TreeNode node, Map<TreeNode, TreeNode> nodeToParent) {
+        if (node == null) {
+            return;
+        }
+        if (node.left != null) {
+            nodeToParent.put(node.left, node);
+        }
+        if (node.right != null) {
+            nodeToParent.put(node.right, node);
+        }
+        dfs(node.left, nodeToParent);
+        dfs(node.right, nodeToParent);
+    }
+}
