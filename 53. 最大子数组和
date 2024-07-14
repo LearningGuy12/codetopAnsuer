@@ -1,0 +1,26 @@
+// 	53. 最大子数组和  https://leetcode.cn/problems/maximum-subarray/description/
+
+class Solution {
+    /**
+     * 贪心思想
+     * 遍历数组，对当前节点如果前面值累加是正的，那么最大和得加上前面的累计值
+     * 所以最大累加和就是比，每个节点加上前面累加和，谁最大
+     * 如果当前节点加前面累计值<=0，后续肯定不要包含这段，那就从下个节点重新再算吧
+     */
+    public int maxSubArray(int[] nums) {
+        int max = Integer.MIN_VALUE;
+        int tmpMax = 0;
+        for (int i = 0; i < nums.length; i++) {
+            // 最大累加和就是比，每个节点加上前面累加和，谁最大
+            tmpMax = nums[i] + tmpMax;
+            if (tmpMax > max) {
+                max = tmpMax;
+            }
+            // 如果当前节点加前面累计值<=0，后续肯定不要包含这段，那就从下个节点重新再算吧
+            if (tmpMax <= 0) {
+                tmpMax = 0;
+            }
+        }
+        return max;
+    }
+}
