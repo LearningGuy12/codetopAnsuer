@@ -1,0 +1,49 @@
+// https://leetcode.cn/problems/3sum/description/
+
+class Solution {
+    /**
+     * 先排序，然后遍历元素：
+     * 如果包含nums[i]，则另外2个值加起来target= -nums[i】
+     * 对于i后面的数组部分，让j等于开头，k等于结尾，nums[j]+nums[k]小于目标则j后移，否则k左移。直到jk相遇。
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+        if (nums == null || nums.length < 3) {
+            return new ArrayList();
+        }
+        Arrays.sort(nums);
+        List<List<Integer>> ret = new ArrayList<List<Integer>>();
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            if (nums[i] > 0) {
+                break;
+            }
+            int target = Math.abs(nums[i]);
+            int k = nums.length - 1;
+            for (int j = i + 1; j < k;) {
+                if (nums[j] + nums[k] > target) {
+                    k--;
+                } else if (nums[j] + nums[k] < target) {
+                    j++;
+                } else {
+                    List<Integer> answer = new ArrayList<Integer>();
+                    answer.add(nums[i]);
+                    answer.add(nums[j]);
+                    answer.add(nums[k]);
+                    ret.add(answer);
+                    j++;
+                    k--;
+                    while (j < k && nums[j] == nums[j - 1]) {
+                        j++;
+                    }
+                    while (j < k && nums[k] == nums[k + 1]) {
+                        k--;
+                    }
+
+                }
+            }
+        }
+        return ret;
+    }
+}
