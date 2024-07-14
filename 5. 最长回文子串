@@ -1,0 +1,46 @@
+class Solution {
+    /**
+     对某个字符，向两边扩展比对两边一致则继续扩展，不一致则是当前字符为中心的最长回文子串。
+     注意aba  abba两种情况都要尝试扩展。
+     可以进行加速：如果当前已算出的回文子串长度为4，则输入s可以直接跳过前2个字符和最后2个字符。
+     */
+    public String longestPalindrome(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        if (s.length() == 1) {
+            return s;
+        }
+        int resultlen = 0;
+        int resultl = 0, resultr = 0;
+        int i = 0;
+        while (i < s.length() - resultlen / 2 + 1) {
+            int len1 = expand(s, i, i);
+            int len2 = expand(s, i, i + 1);
+            int len = Math.max(len1, len2);
+            if (len > resultlen) {
+                resultlen = len;
+                resultl = i - (len - 1) / 2;
+                resultr = i + (len - 1) / 2;
+                if (len2 > len1) {
+                    resultr += 1;
+                }
+            }
+
+            if (i < resultlen / 2 - 1) {
+                i = resultlen / 2 - 1;
+            }
+            i++;
+        }
+
+        return s.substring(resultl, resultr + 1);
+    }
+
+    int expand(String s, int i, int j) {
+        while (i >= 0 && j < s.length() && s.charAt(i) == s.charAt(j)) {
+            i--;
+            j++;
+        }
+        return j - i - 1;
+    }
+}
