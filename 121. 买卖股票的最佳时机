@@ -1,0 +1,27 @@
+// https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/
+
+class Solution {
+    /**
+     * 最大收益只会出现在：某个高点，找它之前的最低点，两者的差值
+     */
+    public int maxProfit(int[] prices) {
+        if (prices == null || prices.length < 2) {
+            return 0;
+        }
+
+        int result = 0;
+        // 某个波动段的最低点值
+        int min = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] < min) {
+                // 当前节点值低于前面最低点，那么从后面开始不必考虑前面的所有值
+                // 因为后续可能的最大收益肯定从这个点开始，而不是前面的最低点
+                min = prices[i];
+            } else if (prices[i] - min > result) {
+                result = prices[i] - min;
+            }
+        }
+
+        return result;
+    }
+}
