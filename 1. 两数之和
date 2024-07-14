@@ -1,0 +1,19 @@
+// https://leetcode.cn/problems/two-sum/
+
+class Solution {
+    /**
+     * 对于nums[i],如果target-nums[i]也在数组中，则是一对答案
+     * 利用hash表来表达这个信息：Map<Integer, Integer> valueToIndex
+     */
+    public int[] twoSum(int[] nums, int target) {
+        // key 值， value 数组中的index
+        Map<Integer, Integer> valueToIndex = new HashMap();
+        for (int i = 0; i < nums.length; i++) {
+            if (valueToIndex.containsKey(target - nums[i])) {
+                return new int[] { valueToIndex.get(target - nums[i]), i };
+            }
+            valueToIndex.put(nums[i], i);
+        }
+        return new int[0];
+    }
+}
