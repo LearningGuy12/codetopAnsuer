@@ -1,0 +1,40 @@
+// https://leetcode.cn/problems/linked-list-cycle/description/
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ * int val;
+ * ListNode next;
+ * ListNode(int x) {
+ * val = x;
+ * next = null;
+ * }
+ * }
+ */
+public class Solution {
+
+    /**
+     * 用快慢指针，1个走一步，1个走两步。
+     * 如果任意指针走到null说明没环
+     * 如果两个指针相遇了，说明有环
+     */
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode p = head, pp = head;
+        while (p != null && pp != null) {
+            p = p.next;
+            if (pp.next != null) {
+                pp = pp.next.next;
+            } else {
+                return false;
+            }
+
+            if (p == pp) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
