@@ -1,0 +1,63 @@
+// https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/description/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
+ * }
+ */
+class Solution {
+    /**
+     * 先从左往右，再从有往左。从根开始做层序遍历，每下一层方向倒置一把。注意如果当前层从左往右遍历，记录下子节点顺序。
+     * 处理下一层，把上一轮的子节点倒排一下访问，就是从右往左了，注意此时对于该层节点的再下一层子节点要先访问右子节点，从右往左记录。
+     * 
+     */
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList();
+        }
+        List<List<Integer>> ret = new ArrayList();
+        List<TreeNode> levelNodes = new ArrayList();
+        levelNodes.add(root);
+        boolean reverseDirection = false;
+        while (!levelNodes.isEmpty()) {
+            Collections.reverse(levelNodes);
+
+            List<TreeNode> nextLevelNodes = new ArrayList();
+            List<Integer> tmp = new ArrayList();
+            for (TreeNode node : levelNodes) {
+                tmp.add(node.val);
+                if (!reverseDirection) {
+                    if (node.left != null) {
+                        nextLevelNodes.add(node.left);
+                    }
+                    if (node.right != null) {
+                        nextLevelNodes.add(node.right);
+                    }
+                } else {
+                    if (node.right != null) {
+                        nextLevelNodes.add(node.right);
+                    }
+                    if (node.left != null) {
+                        nextLevelNodes.add(node.left);
+                    }
+                }
+            }
+            reverseDirection = !reverseDirection;
+            levelNodes = nextLevelNodes;
+            ret.add(tmp);
+        }
+
+        return ret;
+    }
+
+}
