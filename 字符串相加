@@ -1,0 +1,49 @@
+// https://leetcode.cn/problems/add-strings/
+class Solution {
+    /**
+     * 倒序遍历，字符-'0'后相加，注意考虑进位，如果sum>=10则需要进位1.
+     * 最后循环完时可能还存在进位
+     */
+    public String addStrings(String num1, String num2) {
+        if (num1 == null || num1.length() == 0) {
+            return num2;
+        }
+        if (num2 == null || num2.length() == 0) {
+            return num1;
+        }
+        String val = "";
+        int i = num1.length() - 1;
+        int j = num2.length() - 1;
+        int jinwei = 0;
+        while (i >= 0 || j >= 0) {
+            int v1;
+            if (i < 0) {
+                v1 = 0;
+            } else {
+                v1 = (num1.charAt(i) - '0');
+            }
+
+            int v2;
+            if (j < 0) {
+                v2 = 0;
+            } else {
+                v2 = (num2.charAt(j) - '0');
+            }
+
+            int sum = jinwei + v1 + v2;
+            val += sum % 10 + "";
+
+            if (sum >= 10) {
+                jinwei = 1;
+            } else {
+                jinwei = 0;
+            }
+            i--;
+            j--;
+        }
+        if (jinwei == 1) {
+            val += "1";
+        }
+        return new StringBuilder(val).reverse().toString();
+    }
+}
