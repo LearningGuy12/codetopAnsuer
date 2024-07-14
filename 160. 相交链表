@@ -1,0 +1,55 @@
+// 160. 相交链表  https://leetcode.cn/problems/intersection-of-two-linked-lists/description/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ * int val;
+ * ListNode next;
+ * ListNode(int x) {
+ * val = x;
+ * next = null;
+ * }
+ * }
+ */
+public class Solution {
+    /** 
+       让两个链表从同距离末尾同等距离的位置开始遍历。这个位置只能是较短链表的头结点位置。为此，我们必须消除两个链表的长度差。
+        同时向后便利，较短的到尾部后，设为较长head继续。
+        较长的到尾部时，设为较短的head。
+        此时2个指针到尾部的距离一致了，然后一起再向后找到第一个交点
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) {
+            return null;
+        }
+        if (headA == headB) {
+            return headA;
+        }
+        boolean headAEnd = false, headBEnd = false;
+        ListNode curA = headA, curB = headB;
+        while (!(headAEnd && headBEnd)) {
+            if (curA != null) {
+                curA = curA.next;
+            } else {
+                headAEnd = true;
+                curA = headB;
+            }
+            if (curB != null) {
+                curB = curB.next;
+            } else {
+                headBEnd = true;
+                curB = headA;
+            }
+        }
+
+        while (curA != null) {
+            if (curA.equals(curB)) {
+                return curA;
+            }
+            curA = curA.next;
+            curB = curB.next;
+        }
+
+        return null;
+    }
+}
