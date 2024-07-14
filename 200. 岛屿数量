@@ -1,0 +1,72 @@
+// https://leetcode.cn/problems/number-of-islands/description/
+
+class Solution {
+    /**
+     * 从某个点开始 广度优先遍历，巧妙之处：到过的陆地可以标记为是水，后续不需要再遍历考虑这个坐标。这一次遍历路过的部分就是1个岛屿。
+     * 然后再往后找到第一个陆地点，继续广度遍历，直到搜索完
+     */
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+
+        int row = 0, col = 0;
+        int count = 0;
+        Location firstLand = searchFirstLand(grid, row, col);
+        while (firstLand != null) {
+            count++;
+            row = firstLand.row;
+            col = firstLand.col;
+
+            List<Location> nebors = new LinkedList();
+            nebors.add(firstLand);
+            while (!nebors.isEmpty()) {
+                Location cur = nebors.get(0);
+                nebors.remove(0);
+                grid[cur.row][cur.col] = '0';
+
+                checkLocation(grid, cur.row - 1, cur.col, nebors);
+                checkLocation(grid, cur.row, cur.col - 1, nebors);
+                checkLocation(grid, cur.row, cur.col + 1, nebors);
+                checkLocation(grid, cur.row + 1, cur.col, nebors);
+            }
+            firstLand = searchFirstLand(grid, row, col);
+        }
+        return count;
+    }
+
+    void checkLocation(char[][] grid, int row, int col, List<Location> nebors) {
+        if (row < 0 || col < 0 || row >= grid.length || col >= grid[0].length) {
+            return;
+        }
+        if (grid[row][col] == '1') {
+            grid[row][col] = '0';
+            nebors.add(new Location(row, col));
+        }
+    }
+
+    Location searchFirstLand(char[][] grid, int row, int col) {
+        int maxRow = grid.length;
+        int maxCol = grid[0].length;
+        for (; row < maxRow; row++) {
+            for (; col < maxCol; col++) {
+                if (grid[row][col] == '1') {
+                    grid[row][col] = '0';
+                    return new Location(row, col);
+                }
+            }
+            col = 0;
+        }
+        return null;
+    }
+
+    class Location {
+        int row;
+        int col;
+
+        public Location(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+}
