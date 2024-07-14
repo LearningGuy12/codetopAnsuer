@@ -1,0 +1,49 @@
+// 46. 全排列  https://leetcode.cn/problems/permutations/description/
+
+class Solution {
+    /**
+     * 尝试把问题规模缩小
+     * 例如取第一个元素的值，然后对从第2到结束的更小数组进行全排列
+     * 再遍历得到的全排列，把第一个元素的值插入到每种排列的每一个位置
+     * 就得到了当前的全排列
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        if(nums==null){
+            return new ArrayList();
+        }
+        if(nums.length==1){
+            ArrayList<Integer> r = new ArrayList();
+            r.add(nums[0]);
+            ArrayList ret = new ArrayList();
+            ret.add(r);
+            return ret; 
+        }
+        return smallerPermute(nums, 0);
+
+    }
+
+    List<List<Integer>> smallerPermute(int[] nums, int begin) {
+        if (begin == nums.length - 1) {
+            ArrayList<Integer> r = new ArrayList();
+            r.add(nums[begin]);
+            ArrayList ret = new ArrayList();
+            ret.add(r);
+            return ret;
+        }
+        int beginVal = nums[begin];
+        List<List<Integer>> ret = new ArrayList();
+        // 取更小规模的数组，进行全排列
+        List<List<Integer>> smallerRet = smallerPermute(nums, begin + 1);
+        // 遍历全排列
+        for (int m = 0; m < smallerRet.size(); m++) {
+            List<Integer> iter = smallerRet.get(m);
+            // 把当前元素的值插入到每个排列的每个可能位置
+            for (int i = 0; i <= iter.size(); i++) {
+                List<Integer> tmp = new ArrayList(iter);
+                tmp.add(i, beginVal);
+                ret.add(tmp);
+            }
+        }
+        return ret;
+    }
+}
