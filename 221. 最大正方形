@@ -1,0 +1,54 @@
+// https://leetcode.cn/problems/maximal-square/description/
+
+class Solution {
+    /**
+     * 暴力法：遍历每个元素，以此为左上角开始探索，下面加1行右侧加1列，是否都为1，如果是则继续探索，直到不满足。记录下边长度，面积=边长*边长。
+     */
+    public int maximalSquare(char[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        int maxSlide = 0;
+        int row = matrix.length, col = matrix[0].length;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (matrix[i][j] != '1') {
+                    continue;
+                }
+                // 这是最大可能得长度，更大就越界了
+                int posiableMaxSlide = Math.min(row - i, col - j);
+                maxSlide = Math.max(maxSlide, check(i, j, matrix, posiableMaxSlide));
+            }
+        }
+        return maxSlide * maxSlide;
+    }
+
+    // 以这个坐标为起点进行检查，返回最大边长度
+    int check(int i, int j, char[][] matrix, int posiableMaxSlide) {
+        boolean checkResult = true;
+        int maxSlide = 1;
+        for (int k = 1; k < posiableMaxSlide; k++) {
+            // 检查这一列
+            for (int tmp = i; tmp <= i + k; tmp++) {
+                if (matrix[tmp][j + k] != '1') {
+                    checkResult = false;
+                    break;
+                }
+            }
+            // 检查这一行
+            for (int tmp = j; tmp <= j + k; tmp++) {
+                if (matrix[i + k][tmp] != '1') {
+                    checkResult = false;
+                    break;
+                }
+            }
+
+            if (!checkResult) {
+                break;
+            } else {
+                maxSlide = Math.max(maxSlide, k + 1);
+            }
+        }
+        return maxSlide;
+    }
+}
