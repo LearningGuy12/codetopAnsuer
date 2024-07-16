@@ -1,0 +1,99 @@
+// https://leetcode.cn/problems/sort-list/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ * int val;
+ * ListNode next;
+ * ListNode() {}
+ * ListNode(int val) { this.val = val; }
+ * ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    /**
+     * 基本：把链表转成List，Collections.sort(), 再重新构建新的链表返回
+     * 进阶：用归并排序，利用快慢指针找到中点，对左右链表递归调用归并排序，最终递归返回结束就是有序链表
+     */
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+
+        return mergeSort(head);
+    }
+
+    ListNode mergeSort(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+
+        ListNode mid = findMid(head);
+
+        ListNode l = mergeSort(head);
+        ListNode r = mergeSort(mid);
+        ListNode c = concat(l, r);
+        return c;
+    }
+
+    // 快慢指针找中点，注意要把中点前一个节点的next指向null，并返回中点，这样上层调用方就得到得到左右两半链表
+    ListNode findMid(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode p = head;
+        ListNode pp = head;
+
+        // 记录p的上一个节点
+        ListNode preP = null;
+        while (p != null && pp != null) {
+            if (pp.next != null) {
+                preP = p;
+                p = p.next;
+                pp = pp.next.next;
+            } else {
+                break;
+            }
+        }
+        if (preP != null) {
+            // 剪断链表，这样上游可以得到左右2个链表的头
+            preP.next = null;
+        }
+        return p;
+    }
+
+    ListNode concat(ListNode l, ListNode r) {
+        if (l == null) {
+            return r;
+        }
+        if (r == null) {
+            return l;
+        }
+        ListNode head = new ListNode();
+        ListNode tmp = head;
+        while (l != null || r != null) {
+            if (l == null) {
+                tmp.next = r;
+                r = r.next;
+                tmp = tmp.next;
+                continue;
+            }
+            if (r == null) {
+                tmp.next = l;
+                l = l.next;
+                tmp = tmp.next;
+                continue;
+            }
+            if (l.val > r.val) {
+                tmp.next = r;
+                r = r.next;
+            } else {
+                tmp.next = l;
+                l = l.next;
+            }
+            tmp = tmp.next;
+        }
+        return head.next;
+    }
+
+}
