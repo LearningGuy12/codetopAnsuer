@@ -1,0 +1,32 @@
+//https://leetcode.cn/problems/sqrtx/description/
+
+class Solution {
+    /**
+     * 二分法查找，当x大于等于4以后，结果的值必然<x/2 初始值可以做1个加速
+     */
+    public int mySqrt(int x) {
+        if (x <= 0) {
+            return 0;
+        }
+        if (x < 4) {
+            return 1;
+        }
+        // 二分从 1开始，到 x/2结束
+        int begin = 1, end = x / 2;
+        while (begin <= end) {
+            int mid = (begin + end) / 2;
+            // 注意可能乘积超过int表示范围
+            long v1 = (long) mid * mid;
+            long v2 = (long) (mid + 1) * (mid + 1);
+            if (v1 <= x && v2 > x) {
+                return mid;
+            }
+            if (v1 < x) {
+                begin = mid + 1;
+            } else {
+                end = mid;
+            }
+        }
+        return -1;
+    }
+}
