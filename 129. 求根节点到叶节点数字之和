@@ -1,0 +1,44 @@
+// https://leetcode.cn/problems/sum-root-to-leaf-numbers/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
+ * }
+ */
+class Solution {
+    /**
+     * 深度优先遍历，每一个节点链路值等于：上一个节点的链路值*10+ node.val
+     * 如果遍历到叶子节点，返回叶子节点的链路值
+     * 如果遍历到null，返回0（这个节点链路不贡献作用）
+     * 如果遍历到非叶子节点，返回左右子节点链路值之和
+     * 那么根的返回值就是所有链路值的sum
+     */
+    public int sumNumbers(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return dfs(root, 0);
+
+    }
+
+    int dfs(TreeNode node, int preVal) {
+        if (node == null) {
+            return 0;
+        }
+        int val = node.val + preVal * 10;
+        if (node.left == null && node.right == null) {
+            return val;
+        }
+        return dfs(node.left, val) + dfs(node.right, val);
+    }
+
+}
