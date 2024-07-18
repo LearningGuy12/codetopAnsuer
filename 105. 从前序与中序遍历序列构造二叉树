@@ -1,0 +1,49 @@
+// https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
+ * }
+ */
+class Solution {
+    // 思路：递归。preOrder第一个肯定是root，那么inorder中root左边就是左子树，右边是右子树。递归构建左右子树，拼接到根上
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        Map<Integer, Integer> inOrderValToIndex = new HashMap();
+        for (int i = 0; i < inorder.length; i++) {
+            inOrderValToIndex.put(inorder[i], i);
+        }
+        return build(preorder, inorder, 0, preorder.length - 1, 0, inorder.length - 1, inOrderValToIndex);
+    }
+
+    TreeNode build(int[] preorder, int[] inorder, int preleft, int preright, int inleft, int inright,
+            final Map<Integer, Integer> inOrderValToIndex) {
+        if (preleft > preright) {
+            return null;
+        }
+
+        // 先序的第一个值是根
+        int rootVal = preorder[preleft];
+        // 根在中序遍历中的index
+        int inIndex = inOrderValToIndex.get(rootVal);
+        // 左子树的长度
+        int leftLen = inIndex - inleft;
+
+        TreeNode root = new TreeNode(rootVal);
+        // 构造左子节点，找到左子树前序的left right， 中序left right
+        root.left = build(preorder, inorder, preleft + 1, preleft + leftLen, inleft, inIndex - 1,
+                inOrderValToIndex);
+        // 构造右子节点，找到右子树前序的left right， 中序left right
+        root.right = build(preorder, inorder, preleft + leftLen + 1, preright, inIndex + 1, inright, inOrderValToIndex);
+        return root;
+    }
+}
