@@ -1,0 +1,47 @@
+//https://leetcode.cn/problems/sort-an-array/description/
+class Solution {
+    /**
+     * 快排
+     * 选一个值作为pivot，简单点就是最左边元素，好一点的策略是3点取中值
+     * 从右往左找到比这个pivot小的
+     * 从左往右找到比这个pivot大的
+     * swap小的和大的，继续比较
+     * 过程中发现i>=j则停止
+     * 
+     * 然后swap把pivot和i的位置元素，这样得到：左边的都比pivot小，右边都比pivot大
+     * 再递归快排左边、右边
+     */
+    public int[] sortArray(int[] nums) {
+        if (nums == null || nums.length < 2) {
+            return nums;
+        }
+        quickSort(nums, 0, nums.length - 1);
+        return nums;
+    }
+
+    void quickSort(int[] nums, int l, int r) {
+        if (l >= r) {
+            return;
+        }
+        int pivot = nums[l];
+        int i = l, j = r;
+        while (i < j) {
+            while (i < j && nums[j] >= pivot) {
+                j--;
+            }
+            while (i < j && nums[i] <= pivot) {
+                i++;
+            }
+            swap(nums, i, j);
+        }
+        swap(nums, l, i);
+        quickSort(nums, l, i - 1);
+        quickSort(nums, i + 1, r);
+    }
+
+    void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+}
