@@ -1,0 +1,56 @@
+// https://leetcode.cn/problems/restore-ip-addresses/
+class Solution {
+
+    /**
+     * 回溯法 把ip分为4个部分考虑。 backtrace参数含义：
+     * sb表示之前已确定的部分
+     * part表示当前部分，对于当前部分后续可以是. 也可以是再往后加1个字符
+     * index表示当前尝试到的s的index位置
+     * dotCount 已经出现过的.的刷零
+     * 
+     * 特别的 对于0开头的part，如果只有1位0是允许的，但是2位则不允许
+     */
+    public List<String> restoreIpAddresses(String s) {
+        if (s == null || s.length() < 4) {
+            return new ArrayList();
+        }
+        List<String> result = new ArrayList();
+        backtrace("", "", 0, 0, s, result);
+        return result;
+    }
+
+    void backtrace(String sb, String part, int index, int dotCount, final String s, List<String> result) {
+        // 已经有4个. 或者当前部分长度已经超过3 ,或者遍历越界 肯定不满足直接返回
+        if (dotCount > 3 || part.length() > 3 || index >= s.length()) {
+            return;
+        }
+        char c = s.charAt(index);
+        String tmp = part + c;
+        int tmpVal = Integer.valueOf(tmp);
+        if (tmpVal > 255) {
+            // 不满足0-255要求
+            return;
+        }
+
+        // 如果当前part是以0开始，则后面只可能尝试加上. 特殊逻辑
+        if (part.length() == 0 && c == '0') {
+            if (index == s.length() - 1 && dotCount == 3) {
+                // 遍历到字符串长度，说明符合条件，是一种有效结果
+                result.add(sb + "0");
+                return;
+            }
+            backtrace(sb + "0" + ".", "", index + 1, dotCount + 1, s, result);
+            return;
+        }
+
+        if (index == s.length() - 1 && dotCount == 3) {
+            // 遍历到字符串长度，说明符合条件，是一种有效结果
+            result.add(sb + part + c);
+            return;
+        }
+        // 加入. 往后继续尝试
+        backtrace(sb + tmp + ".", "", index + 1, dotCount + 1, s, result);
+        // 不加入. 往后继续尝试
+        backtrace(sb, part + c, index + 1, dotCount, s, result);
+    }
+}
