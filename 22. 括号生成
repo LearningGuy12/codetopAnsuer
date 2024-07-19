@@ -1,0 +1,35 @@
+//https://leetcode.cn/problems/generate-parentheses/description/
+class Solution {
+    /**
+     * 尝试每一种可能，回溯法
+     * 如果左半括号数量小于n 可以插入左半括号
+     * 如果右半括号数量小于左半括号 可以插入右半括号
+     * 直到长度=2*n 则是一种正确答案
+     */
+    public List<String> generateParenthesis(int n) {
+        if (n <= 0) {
+            return new ArrayList();
+        }
+        List<String> result = new ArrayList();
+        backtrace(new StringBuffer(), n, 0, 0, result);
+        return result;
+    }
+
+    void backtrace(StringBuffer sb, int n, int leftCnt, int rightCnt, List<String> result) {
+        int curLength = sb.length();
+        if (curLength == 2 * n) {
+            result.add(sb.toString());
+            return;
+        }
+        if (leftCnt < n) {
+            sb.append("(");
+            backtrace(sb, n, leftCnt + 1, rightCnt, result);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        if (rightCnt < leftCnt) {
+            sb.append(")");
+            backtrace(sb, n, leftCnt, rightCnt + 1, result);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }
+}
