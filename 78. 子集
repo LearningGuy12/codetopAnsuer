@@ -1,0 +1,33 @@
+//https://leetcode.cn/problems/subsets/description/
+
+class Solution {
+    List<Integer> part = new ArrayList();
+    List<List<Integer>> ret = new ArrayList();
+
+    /**
+     * 子集的过程：每个元素，要么包含，要么不包含 一共的可能组合有2^n种
+     * 递归法，从第一个元素开始，有2种可能性：
+     * 1 包含当前元素，递归下个元素
+     * 2 不包含当前元素，递归第二个元素
+     * 递归深度达到nums.length时，是一种子集
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        if (nums == null) {
+            return ret;
+        }
+        dfs(nums, 0);
+        return ret;
+    }
+
+    void dfs(int[] nums, int index) {
+        if (index == nums.length) {
+            ret.add(new ArrayList(part));
+            return;
+        }
+        dfs(nums, index + 1);
+
+        part.add(nums[index]);
+        dfs(nums, index + 1);
+        part.remove(part.size() - 1);
+    }
+}
