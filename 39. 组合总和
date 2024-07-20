@@ -1,0 +1,54 @@
+// https://leetcode.cn/problems/combination-sum/description/
+
+class Solution {
+    /**
+     * 回溯法，为了加速剪枝可以进行一下排序，这样如果回溯到的值已经大于target等条件可以直接返回不往后继续尝试
+     */
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return new ArrayList();
+        }
+        Arrays.sort(candidates);
+        List<List<Integer>> ret = new ArrayList();
+        backtrace(candidates, new ArrayList(), 0, 0, target, ret);
+        return ret;
+    }
+
+    void backtrace(int[] candidates, final List<Integer> part, int partSum, int index, int target,
+            List<List<Integer>> ret) {
+        if (index >= candidates.length || partSum > target) {
+            return;
+        }
+        int val = candidates[index];
+        if (val > target) {
+            return;
+        }
+
+        // 跳过当前，直接往后尝试
+        if (partSum == target) {
+            ret.add(part);
+            return;
+        }
+        backtrace(candidates, part, partSum, index + 1, target, ret);
+
+        // 加上当前
+        int sum = val + partSum;
+        if (sum == target) {
+            List<Integer> tmp = new ArrayList(part);
+            tmp.add(val);
+            ret.add(tmp);
+            return;
+        }
+        if (sum > target) {
+            // 因为之前排序了，所以如果此处大于target，后续也一定大于，直接返回没必要继续尝试
+            return;
+        }
+        // 继续尝试加当前
+        List<Integer> tmp = new ArrayList(part);
+        tmp.add(val);
+        backtrace(candidates, tmp, sum, index, target, ret);
+
+        // 注意：！！ 原本思路继续尝试加下一个元素, 实际上这是没必要的会造成算出重复结果。
+        // backtrace(candidates, tmp, sum, index + 1, target, ret);
+    }
+}
