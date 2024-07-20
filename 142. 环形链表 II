@@ -1,0 +1,48 @@
+// https://leetcode.cn/problems/linked-list-cycle-ii/submissions/548300060/
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ * int val;
+ * ListNode next;
+ * ListNode(int x) {
+ * val = x;
+ * next = null;
+ * }
+ * }
+ */
+public class Solution {
+    /**
+     * 快慢指针，当相遇时，在从head继续，slow也继续，相遇的点就是环入口。
+     * 原理: 慢没走完第一圈环，一定会和快指针相遇。
+     * 为什么在第一圈就会相遇呢？ 设环的长度为 L，当慢指针刚进入环时，慢指针需要走 L 步(即 L 秒)才能走完一圈，此时快指针距离慢指针的最大距离为
+     * L-1，我们再次以慢指针为参考系，如上所说，快指针在按照1节点/秒的速度在追赶慢指针，所以肯定能在 L 秒内追赶到慢指针。
+     * 
+     * a表示环外长度，b表示快慢相遇时，慢走过的路径长度，c表示环中剩余的路径长度
+     * slow * 2 = fast;
+     * slow = a + b;
+     * fast = a + b + c + b = a + 2*b + c;
+     * (a + b)*2 = a + 2*b + c;
+     * a = c;
+     */
+    public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return null;
+        }
+        ListNode slow = head, fast = head;
+        while (slow != null && fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                // 有环
+                while (head != slow) {
+                    head = head.next;
+                    slow = slow.next;
+                }
+                return head;
+            }
+        }
+        // 无环
+        return null;
+    }
+}
