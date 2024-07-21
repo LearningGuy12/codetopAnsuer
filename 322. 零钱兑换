@@ -42,3 +42,33 @@ class Solution {
         backtrace(coins, amount, partSum, index + 1);
     }
 }
+
+
+// 下面不是本人代码，参考学习用DP思想记录一下
+class Solution {
+  /**
+     * dp[i]表示金额i最少需要的硬币数目
+     * 那么对于dp[i]，从每个coin开始取，取了硬币coin，那么dp[i-coin]表示剩余金额的硬币数，这个是已经算出来的
+     * 那么，每个coin循环一遍，找到硬币数最少的情况
+     */
+    public int coinChange(int[] coins, int amout){
+        if(coins.length == 0){
+            return -1;
+        }
+        //dp[i]表示金额i最少需要的硬币数
+        int[] dp = new int[amout+1];
+        dp[0] = 0;
+        for(int i=1;i<=amout;i++){
+            int min = Integer.MAX_VALUE;
+            for (final int coin : coins) {
+                if (i - coin >= 0 && dp[i - coin] < min) {
+                    min = dp[i - coin] + 1;
+                }
+            }
+            dp[i] = min;
+        }
+        return dp[amout]== Integer.MAX_VALUE ? -1 : dp[amout];
+    }
+}
+
+
