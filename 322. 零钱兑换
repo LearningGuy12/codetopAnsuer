@@ -1,0 +1,44 @@
+// https://leetcode.cn/problems/coin-change/
+
+class Solution {
+    List<Integer> part = new ArrayList();
+    Integer result = Integer.MAX_VALUE;
+
+    /**
+     * 暴力法，递归探索各种可能。先排个序进行剪枝，到某个元素已经超过了amount就不需要继续。如果已经递归的part.size()>已经寻找到的最小次数，也不用继续递归
+     */
+    public int coinChange(int[] coins, int amount) {
+        if (coins == null || coins.length == 0 || amount < 0) {
+            return -1;
+        }
+        if (amount == 0) {
+            return 0;
+        }
+        // 为了找到最少个数，尝试先加大的数，更容易快速在递归回溯中中止
+        Integer[] integerArray = Arrays.stream(coins).boxed().toArray(Integer[]::new);
+
+        Arrays.sort(integerArray, Collections.reverseOrder());
+        backtrace(integerArray, amount, 0, 0);
+        return result == Integer.MAX_VALUE ? -1 : result;
+    }
+
+    public void backtrace(Integer[] coins, int amount, int partSum, int index) {
+        // 注意part.size可以作为剪枝条件
+        if (index >= coins.length || part.size() >= result || partSum > amount) {
+            return;
+        }
+        int val = coins[index];
+        if (partSum + val == amount) {
+            result = Math.min(part.size() + 1, result);
+            return;
+        }
+
+        // 包含当前金额。 注意这个判断不能写到更上面
+        part.add(val);
+        backtrace(coins, amount, partSum + val, index);
+        part.remove(part.size() - 1);
+
+        // 不包含当前金额
+        backtrace(coins, amount, partSum, index + 1);
+    }
+}
