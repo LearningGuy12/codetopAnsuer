@@ -1,0 +1,90 @@
+// https://leetcode.cn/problems/multiply-strings/
+class Solution {
+    /**
+     * 思路 问题简化为num1 * num2中的每一位数，num1* c[length-1], num1*c[length-2] .... 得到值。
+     * 注意，如果num2取十位数，则该值右侧加一位0；
+     * 再把上面所有值相加
+     */
+    public String multiply(String num1, String num2) {
+        if (num1 == null || num1.length() == 0 || num2 == null || num2.length() == 0) {
+            return "";
+        }
+        if ("0".equals(num1) || "0".equals(num2)) {
+            return "0";
+        }
+
+        String sum = "0";
+        for (int j = num2.length() - 1; j >= 0; j--) {
+            char c = num2.charAt(j);
+            String mul = multiplyOne(num1, c);
+
+            // 根据j是第几位，后面补0
+            int iter = 0;
+            while (iter++ < num2.length() - 1 - j) {
+                mul += "0";
+            }
+            sum = add(sum, mul);
+        }
+
+        return sum;
+    }
+
+    String multiplyOne(String num1, char c2) {
+        StringBuilder ret = new StringBuilder();
+        int jinwei = 0;
+        int n2 = charToNum(c2);
+
+        for (int i = num1.length() - 1; i >= 0; i--) {
+            char c1 = num1.charAt(i);
+            int n1 = charToNum(c1);
+
+            int tmp = n1 * n2 + jinwei;
+            jinwei = tmp / 10;
+            ret.append(tmp % 10 + "");
+        }
+        if (jinwei > 0) {
+            ret.append(jinwei + "");
+        }
+        return ret.reverse().toString();
+    }
+
+    String add(String num1, String num2) {
+        StringBuilder ret = new StringBuilder();
+        int jinwei = 0;
+
+        // 简化处理让num1长度<=num2防止后续越界
+        if (num1.length() > num2.length()) {
+            String tmp = num1;
+            num1 = num2;
+            num2 = tmp;
+        }
+
+        int i = num1.length() - 1;
+        int j = num2.length() - 1;
+
+        while (j >= 0) {
+            char c1 = i < 0 ? '0' : num1.charAt(i);
+            int n1 = charToNum(c1);
+            char c2 = num2.charAt(j);
+            int n2 = charToNum(c2);
+
+            int tmp = n1 + n2 + jinwei;
+            jinwei = tmp / 10;
+            ret.append(tmp % 10 + "");
+            i--;
+            j--;
+        }
+        if (jinwei > 0) {
+            ret.append(jinwei + "");
+        }
+        return ret.reverse().toString();
+    }
+
+    int charToNum(char c) {
+        int n = c - '0';
+        if (n < 0 || n > 9) {
+            throw new IllegalArgumentException(c + "");
+        }
+        return n;
+    }
+}
