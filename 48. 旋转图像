@@ -1,0 +1,27 @@
+// https://leetcode.cn/problems/rotate-image/
+class Solution {
+    /**
+     * 思路：把正方形理解为一层层的方形圈
+     * i表示第几层, j表示对于这一层的圈从左上角开始，向右遍历元素，每个元素进行4次交换
+     * 注意j往右遍历时，不要走到这一行最后一个
+     */
+    public void rotate(int[][] matrix) {
+        int len = matrix[0].length;
+        for (int i = 0; i < (matrix[0].length + 1) / 2; i++) {
+            for (int j = 0; j < len - 2 * i - 1; j++) {
+                int tmp = matrix[i][i + j];
+                matrix[i][i + j] = matrix[len - 1 - i - j][i];
+                matrix[len - 1 - i - j][i] = matrix[len - 1 - i][len - 1 - i - j];
+                matrix[len - 1 - i][len - 1 - i - j] = matrix[i + j][len - 1 - i];
+                matrix[i + j][len - 1 - i] = tmp;
+
+                // 下面这样是逆时针旋转90度
+                // matrix[i][i + j] = matrix[i + j][len -1-i ];
+                // matrix[i + j][len - 1 - i] = matrix[len - 1 - i][len - 1 - i - j];
+                // matrix[len - 1 - i][len - 1 - i - j] = matrix[len - 1 - i - j][i];
+                // matrix[len - 1 - i - j][i] = tmp;
+            }
+        }
+    }
+
+}
