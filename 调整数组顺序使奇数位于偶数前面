@@ -1,0 +1,27 @@
+// https://leetcode.cn/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/
+class Solution {
+    // 注意题目并没有要求保持相对顺序
+    // 左右指针向中间遍历，左边往右找偶数，右边往左找奇数，交换
+    public int[] trainingPlan(int[] actions) {
+        if (actions == null || actions.length <= 1) {
+            return actions;
+        }
+        int l = 0, r = actions.length - 1;
+        while (l < r) {
+            while (l < r && actions[l] % 2 == 1) {
+                l++;
+            }
+            while (l < r && actions[r] % 2 == 0) {
+                r--;
+            }
+            swap(actions, l++, r--);
+        }
+        return actions;
+    }
+
+    void swap(int[] n, int l, int r) {
+        int tmp = n[l];
+        n[l] = n[r];
+        n[r] = tmp;
+    }
+}
