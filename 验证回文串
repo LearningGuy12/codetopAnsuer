@@ -1,0 +1,25 @@
+// https://leetcode.cn/problems/valid-palindrome/
+class Solution {
+    public boolean isPalindrome(String s) {
+        if (s == null || s.length() <= 1) {
+            return true;
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c >= 'a' && c <= 'z') {
+                builder.append(c);
+            } else if (c >= 'A' && c <= 'Z') {
+                builder.append(Character.toLowerCase(c));
+            } else if (Character.isDigit(c)) {
+                builder.append(c);
+            }
+            // Character.isLetterOrDigit(ch) 可以更简单判断
+        }
+        String tmp1 = builder.toString();
+        String tmp2 = builder.reverse().toString();
+        return tmp1.equals(tmp2);
+        // return tmp1.equalsIgnoreCase(tmp2); 也可以不用大写转小写这里用库函数忽略大小写
+
+    }
+}
