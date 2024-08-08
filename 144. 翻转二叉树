@@ -1,0 +1,28 @@
+// https://leetcode.cn/problems/er-cha-shu-de-jing-xiang-lcof/description/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    /** 每个节点的左节点 = 右节点的翻转    右节点=左节点的翻转
+     */
+    public TreeNode mirrorTree(TreeNode root) {
+        return reverse(root);
+    }
+
+    TreeNode reverse(TreeNode t) {
+        if (t == null) {
+            return t;
+        }
+        TreeNode newLeft = reverse(t.right);
+        TreeNode newRight = reverse(t.left);
+        t.left = newLeft;
+        t.right = newRight;
+        return t;
+    }
+}
