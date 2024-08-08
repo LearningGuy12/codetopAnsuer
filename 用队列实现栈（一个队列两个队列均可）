@@ -1,8 +1,6 @@
 // https://leetcode.cn/problems/implement-stack-using-queues/description/
 class MyStack {
-    // 保持list1的顺序为队列顺序，比如push 123 则队列为：3->2->1 , PUSH操作就是list1的offer()
     Deque<Integer> list1 = new LinkedList();
-    // 保持list2的顺序为反顺序，比如push 123 则队列为：1->2->3，POP操作就是list2的poll()
     Deque<Integer> list2 = new LinkedList();
 
     // 上述思路也可以用1个队列实现，直接list1原地翻转，例如：
@@ -17,33 +15,32 @@ class MyStack {
     }
 
     public void push(int x) {
-        // list1 把x加入队列时，要把list2里的元素先放回来
-        if (!list2.isEmpty()) {
-            move(list2, list1);
-        }
         list1.offer(x);
     }
 
     public int pop() {
-        // list2 把队列头移除前，要把list1里元素先放过来
-        if (!list1.isEmpty()) {
-            move(list1, list2);
+        int t = -1;
+        while (!list1.isEmpty()) {
+            t = list1.poll();
+            if (list1.isEmpty()) {
+                break;
+            }
+            list2.offer(t);
         }
-        return list2.poll();
+        list1 = list2;
+        list2 = new LinkedList();
+        return t;
     }
 
     public int top() {
-        if (!list1.isEmpty()) {
-            move(list1, list2);
+        int t = -1;
+        while (!list1.isEmpty()) {
+            t = list1.poll();
+            list2.offer(t);
         }
-        return list2.peek();
-    }
-
-    private void move(Deque from, Deque to) {
-        // 队列反向存储，从from的队尾取值，加入到to的队头
-        while (!from.isEmpty()) {
-            to.offer(from.removeLast());
-        }
+        list1 = list2;
+        list2 = new LinkedList();
+        return t;
     }
 
     public boolean empty() {
