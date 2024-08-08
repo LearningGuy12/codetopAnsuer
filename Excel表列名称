@@ -1,0 +1,18 @@
+// https://leetcode.cn/problems/excel-sheet-column-title/description/
+class Solution {
+    /**
+     * 其实就是26进制的字符表达转换
+     */
+    public String convertToTitle(int columnNumber) {
+        StringBuilder s = new StringBuilder();
+        while (columnNumber > 0) {
+            // 此处看起来简单，实际上要注意是从1开始映射A，而不是0映射A，因此需要先--
+            // 一开始犯错写法是没有先做columnNumber--，直接columnNumber%26，映射不对
+            columnNumber--;
+            int c = columnNumber % 26;
+            s.append((char) (c + 'A'));
+            columnNumber = columnNumber / 26;
+        }
+        return s.reverse().toString();
+    }
+}
