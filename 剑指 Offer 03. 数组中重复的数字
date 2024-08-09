@@ -1,0 +1,24 @@
+// https://leetcode.cn/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/description/
+class Solution {
+    /**
+     * 注意提示里说明0 ≤ documents[i] ≤ n-1，那么可以利用原地交换法寻找（如果没有这个条件，则用hashmap）
+     * 如果存在2个相同的数字，那么数字交换过程中一定会出现某个数字要移动过去，但是那里已经是这个数字了
+     */
+    public int findRepeatDocument(int[] documents) {
+        if (documents == null || documents.length < 2) {
+            return -1;
+        }
+        for (int i = 0; i < documents.length; i++) {
+            while (i != documents[i]) {
+                if (documents[i] == documents[documents[i]]) {
+                    // 如果当前元素和要移动过去的位置的元素相同，则是重复的
+                    return documents[i];
+                }
+                int tmp = documents[documents[i]];
+                documents[documents[i]] = documents[i];
+                documents[i] = tmp;
+            }
+        }
+        return -1;
+    }
+}
