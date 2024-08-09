@@ -1,0 +1,27 @@
+// https://leetcode.cn/problems/remove-all-adjacent-duplicates-in-string/description/
+class Solution {
+
+    /**
+     * 题目定义是只删除2个相邻的，我理解成了连续相同的都删，所以下面代码不能搞定"aaa"这样的case，题目意思是要删除第12个a，留下第三个。
+     * 我这个程序会全都删了
+     */
+    public String removeDuplicates(String s) {
+        if (s == null || s.length() <= 1) {
+            return s;
+        }
+        int i = 0;
+        StringBuilder ss = new StringBuilder(s);
+        while (i < ss.length()) {
+            int tmp = i;
+            while (tmp < ss.length() && ss.charAt(i) == ss.charAt(tmp)) {
+                tmp++;
+            }
+            if (tmp - i > 1) {
+                ss.delete(i, tmp);
+                return removeDuplicates(ss.toString());
+            }
+            i++;
+        }
+        return ss.toString();
+    }
+}
